@@ -170,7 +170,7 @@ export const forgotPassword = async (req, res) => {
     await sendEmail(user.email, {
       subject: "Reset Your Password",
       category: "reset-password",
-      text: `Hello ${user.name},\n\nYou requested to reset your password. Please click the link below to reset your password:\n\nhttp://localhost:5000/api/v1/auth/reset-password/${resetPasswordToken}\n\nThis link will expire in 1 hour.\n\nIf you did not request this, please ignore this email.\n\nThank you!`,
+      text: `Hello ${user.name},\n\nYou requested to reset your password. Please click the link below to reset your password:\n\nhttp://localhost:5173/reset-password/${resetPasswordToken}\n\nThis link will expire in 1 hour.\n\nIf you did not request this, please ignore this email.\n\nThank you!`,
     });
     console.log(
       `http://localhost:5000/api/v1/auth/reset-password/${resetPasswordToken}`
