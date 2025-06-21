@@ -10,25 +10,30 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import DashboardPage from "./pages/DashboardPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import StarterPage from "./pages/StarterPage";
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, logout } = useAuthStore();
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (!user.isVerified) {
     return <Navigate to="/verify-email" replace />;
   }
 
+  if (user.role === "admin") {
+    logout();
+    return <Navigate to="/" replace />;
+  }
   return children;
 };
 const RedirectAuthenticatedUser = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
   if (isAuthenticated && user.isVerified) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return children;
@@ -70,8 +75,9 @@ function App() {
       />
 
       <Routes>
+        <Route path="/" element={<StarterPage />} />
         <Route
-          path="/"
+          path="/home"
           element={
             <ProtectedRoute>
               <DashboardPage />
