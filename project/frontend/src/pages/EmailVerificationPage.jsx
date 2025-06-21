@@ -9,7 +9,10 @@ const EmailVerificationPage = () => {
   const inputRefs = useRef([]);
   const navigate = useNavigate();
 
-  const { error, isLoading, verifyEmail } = useAuthStore();
+  const { error, isLoading, verifyEmail, user } = useAuthStore();
+
+  const expiryTime = new Date(user?.verificationTokenExpiresAt).getTime();
+  const [timeLeft, setTimeLeft] = useState(expiryTime - Date.now());
 
   const handleChange = (index, value) => {
     const newCode = [...code];
@@ -49,7 +52,7 @@ const EmailVerificationPage = () => {
     try {
       console.log(verificationCode);
       await verifyEmail(verificationCode);
-      navigate("/");
+      navigate("/login");
       toast.success("Email verified successfully");
     } catch (error) {
       console.log(error);
@@ -64,6 +67,28 @@ const EmailVerificationPage = () => {
     }
   }, [code]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const remaining = expiryTime - now;
+      if (remaining <= 0) {
+        clearInterval(interval);
+        toast.error("Verification time expired. Please sign up again.");
+        navigate("/signup");
+      } else {
+        setTimeLeft(remaining);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [expiryTime]);
+  const formatTime = (ms) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+    const seconds = String(totalSeconds % 60).padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  };
+
   return (
     <div className="max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
       <motion.div
@@ -72,6 +97,11 @@ const EmailVerificationPage = () => {
         transition={{ duration: 0.5 }}
         className="bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-full max-w-md"
       >
+        <div className="text-center text-sm text-red-400 font-medium mb-2">
+          Verification expires in:{" "}
+          <span className="font-bold text-white">{formatTime(timeLeft)}</span>
+        </div>
+
         <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text">
           Verify Your Email
         </h2>

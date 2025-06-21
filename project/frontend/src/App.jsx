@@ -11,6 +11,10 @@ import DashboardPage from "./pages/DashboardPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import StarterPage from "./pages/StarterPage";
+import SettingPage from "./pages/SettingPage";
+import JournalWritingPage from "./pages/JournalWritingPage";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user, logout } = useAuthStore();
@@ -32,7 +36,7 @@ const ProtectedRoute = ({ children }) => {
 const RedirectAuthenticatedUser = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
-  if (isAuthenticated && user.isVerified) {
+  if (isAuthenticated && user?.isVerified) {
     return <Navigate to="/home" replace />;
   }
 
@@ -75,7 +79,14 @@ function App() {
       />
 
       <Routes>
-        <Route path="/" element={<StarterPage />} />
+        <Route
+          path="/"
+          element={
+            <RedirectAuthenticatedUser>
+              <StarterPage />
+            </RedirectAuthenticatedUser>
+          }
+        />
         <Route
           path="/home"
           element={
@@ -116,6 +127,22 @@ function App() {
             <RedirectAuthenticatedUser>
               <ResetPasswordPage />
             </RedirectAuthenticatedUser>
+          }
+        />
+        <Route
+          path="/journal-entry"
+          element={
+            <ProtectedRoute>
+              <JournalWritingPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <SettingPage />
+            </ProtectedRoute>
           }
         />
       </Routes>

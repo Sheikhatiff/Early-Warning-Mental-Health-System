@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { Settings } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 const DashboardSideBar = ({ user }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -12,7 +11,10 @@ const DashboardSideBar = ({ user }) => {
       minute: "2-digit",
     });
   };
-
+  const navigate = useNavigate();
+  const handleSettings = () => {
+    navigate("/settings");
+  };
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -24,7 +26,7 @@ const DashboardSideBar = ({ user }) => {
       <div className="flex-1 flex flex-col items-center justify-center px-8 py-8">
         <div className="relative mb-8">
           {/* Profile Image Container */}
-          <div className="w-24 h-24 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 p-1">
+          <div className="w-34 h-34 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 p-1">
             <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
               {user.photo ? (
                 <img
@@ -76,9 +78,9 @@ const DashboardSideBar = ({ user }) => {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
+          onClick={handleSettings}
           className="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200 flex items-center justify-center gap-2"
         >
-          <Settings className="w-5 h-5" />
           Settings
         </motion.button>
       </div>

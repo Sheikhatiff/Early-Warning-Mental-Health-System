@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import { PenTool, Rocket, Sparkles, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const DashboardMain = ({ user }) => {
+  const navigate = useNavigate();
   const handleWriteThought = () => {
-    // Navigate to write thought page
-    console.log("Navigate to write thought page");
+    navigate("/journal-entry");
   };
 
   const handleComingSoon = () => {

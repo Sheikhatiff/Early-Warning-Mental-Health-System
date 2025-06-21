@@ -1,4 +1,4 @@
-import { sendEmail } from "../mailtrap/emails.js";
+import { sendAccountDeletionEmail, sendEmail } from "../mailtrap/emails.js";
 import User from "../models/user.model.js";
 import Agenda from "../utils/agenda.js";
 
@@ -13,11 +13,12 @@ const checkVerificationAgenda = () => {
       } else {
         await User.findByIdAndDelete(userId);
         // TODO: send email to user about deletion
-        await sendEmail(searchedUser.email, {
-          subject: "Account Deletion Notice",
-          text: `Dear ${searchedUser.name}, your account has been deleted due to not to verify account in a given time. Please register again if you wish to use our services.`,
-          category: "account-deletion",
-        });
+        // await sendEmail(searchedUser.email, {
+        //   subject: "Account Deletion Notice",
+        //   text: `Dear ${searchedUser.name}, your account has been deleted due to not to verify account in a given time. Please register again if you wish to use our services.`,
+        //   category: "account-deletion",
+        // });
+        await sendAccountDeletionEmail(searchedUser.email, searchedUser.name);
         console.log(
           "Deleted user ",
           searchedUser.name,
