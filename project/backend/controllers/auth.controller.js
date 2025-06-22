@@ -4,7 +4,9 @@ import {
   sendPasswordResetEmail,
   sendPasswordResetSuccessEmail,
   sendVerificationEmail,
+  // sendVerificationEmail,
   sendVerificationSuccessEmail,
+  sendWelcomeEmail,
 } from "../mailtrap/emails.js";
 import User from "../models/user.model.js";
 import Agenda from "../utils/agenda.js";
@@ -15,6 +17,7 @@ import {
   timeToMs,
 } from "../utils/token.js";
 import { startAgenda } from "./agenda.controller.js";
+const clientUrl = `http://localhost:5173/`;
 
 export const signup = async (req, res) => {
   try {
@@ -25,28 +28,25 @@ export const signup = async (req, res) => {
       password,
       passwordConfirm,
       verificationToken: generateVerificationToken(),
-      verificationTokenExpiresAt: new Date(Date.now() + timeToMs(0, 0, 1)),
+      verificationTokenExpiresAt: new Date(Date.now() + timeToMs(0, 0, 15)),
     });
-    console.log(new Date(user.verificationTokenExpiresAt).toLocaleString());
 
     startAgenda();
+    console.log(new Date(user.verificationTokenExpiresAt).toLocaleString());
     await Agenda.schedule(
       user.verificationTokenExpiresAt,
       "checkVerification",
       { userId: user._id }
     );
 
-    //TODO: send verification email
+    const verificationPageLink = `${clientUrl}verify-email`;
     if (!user.isVerified) {
-      // await sendEmail(user.email, {
-      //   subject: "Verify your email",
-      //   text: `Hello ${user.name},\n\nPlease verify your email by clicking the link below:\n\nhttp://localhost:5000/api/v1/auth/verify-email?token=${user.verificationToken}\n\nThis link will expire in 15 minutes.\n\nThank you!`,
-      //   category: "verification",
-      // });
       await sendVerificationEmail(
         user.email,
         user.name,
-        user.verificationToken
+        user.verificationToken,
+        verificationPageLink,
+        user.verificationTokenExpiresAt
       );
     }
     res.status(201).json({
@@ -57,8 +57,7 @@ export const signup = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Internal Server Error",
-      error: err.message,
+      message: err.message || "Internal Server Error",
     });
     console.log(`Error in signup: ${err.message}`);
     console.log(`Error in signup: ${err}`);
@@ -93,14 +92,8 @@ export const verifyEmail = async (req, res) => {
     user.verificationToken = undefined;
     user.verificationTokenExpiresAt = undefined;
     await user.save();
-
-    // TODO: send verification success email
-    // await sendEmail(user.email, {
-    //   subject: "Email Verified Successfully",
-    //   text: `Hello ${user.name},\n\nYour email has been successfully verified! You can now log in to your account.\n\nThank you!`,
-    //   category: "verification-success",
-    // });
-    await sendVerificationSuccessEmail(user.email, user.name);
+    const dashBoardUrl = `${clientUrl}login`;
+    await sendVerificationSuccessEmail(user.email, user.name, dashBoardUrl);
 
     res
       .status(200)
@@ -108,8 +101,7 @@ export const verifyEmail = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Internal Server Error",
-      error: err.message,
+      message: err.message || "Internal Server Error",
     });
     console.log(`Error in verifyEmail: ${err.message}`);
     console.log(`Error in verifyEmail: ${err}`);
@@ -179,15 +171,7 @@ export const forgotPassword = async (req, res) => {
         .status(400)
         .json({ success: false, message: `User not found` });
 
-    // await sendEmail(user.email, {
-    //   subject: "Reset Your Password",
-    //   category: "reset-password",
-    //   text: `Hello ${user.name},\n\nYou requested to reset your password. Please click the link below to reset your password:\n\nhttp://localhost:5173/reset-password/${resetPasswordToken}\n\nThis link will expire in 1 hour.\n\nIf you did not request this, please ignore this email.\n\nThank you!`,
-    // });
-    // console.log(
-    //   `http://localhost:5000/api/v1/auth/reset-password/${resetPasswordToken}`
-    // );
-    const resetURL = `http://localhost:5173/reset-password/${resetPasswordToken}`;
+    const resetURL = `${clientUrl}reset-password/${resetPasswordToken}`;
     await sendPasswordResetEmail(user.email, user.name, resetURL);
     res.status(200).json({
       success: true,
@@ -222,11 +206,6 @@ export const resetPassword = async (req, res) => {
     user.passwordChangedAt = Date.now() - 1000;
     user.resetPasswordToken = user.resetTokenExpiresAt = undefined;
     await user.save();
-    // await sendEmail(user.email, {
-    //   subject: "Password Reset Successfully",
-    //   text: `Hello ${user.name},\n\nYour password has been reset successfully! You can now log in with your new password.\n\nThank you!`,
-    //   category: "password-reset-success",
-    // });
     await sendPasswordResetSuccessEmail(user.email, user.name);
     res
       .status(200)
@@ -241,7 +220,7 @@ export const resetPassword = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
   try {
-    const user = req.user; // Assuming user is set by auth middleware
+    const user = req.user;
     if (!user)
       return res
         .status(400)

@@ -25,7 +25,7 @@ export const useAuthStore = create((set) => ({
       console.log(res.data.data);
     } catch (error) {
       set({
-        error: error.response.data.message || "Error signing up",
+        error: error.response || "Error signing up",
         isLoading: false,
       });
       throw error;

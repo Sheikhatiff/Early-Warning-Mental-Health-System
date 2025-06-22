@@ -8,6 +8,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please tell us your name"],
       trim: true,
+      validate: {
+        validator: function (elm) {
+          return !/\d/.test(elm);
+        },
+        message: "Digits A'int allowed in Name!",
+      },
     },
     email: {
       type: String,
@@ -17,7 +23,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       validate: [validator.isEmail, "please provide valid email"],
     },
-    photo: { type: String, default: "default.jpg" },
+    photo: { type: String, default: "default.png" },
     role: {
       type: String,
       default: "user",
@@ -28,6 +34,16 @@ const userSchema = new mongoose.Schema(
       required: [true, "please provide a password"],
       minlength: 8,
       select: false,
+
+      validate: {
+        validator: function (elm) {
+          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/.test(
+            elm
+          );
+        },
+        message:
+          "Please ensure all password requirements(atleast 1 digit & 1 lower,capital, special character)",
+      },
     },
     passwordConfirm: {
       type: String,

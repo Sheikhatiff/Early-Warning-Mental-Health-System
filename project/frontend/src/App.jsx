@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import FloatingShape from "./components/FloatingShape";
 import SignUpPage from "./pages/SignUpPage";
@@ -13,8 +13,6 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import StarterPage from "./pages/StarterPage";
 import SettingPage from "./pages/SettingPage";
 import JournalWritingPage from "./pages/JournalWritingPage";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user, logout } = useAuthStore();

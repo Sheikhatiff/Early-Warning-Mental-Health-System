@@ -5,6 +5,7 @@ import { useState } from "react";
 import Input from "../components/Input";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import { useAuthStore } from "../store/authStore";
+import toast from "react-hot-toast";
 
 function SignUpPage() {
   const [name, setName] = useState("");
@@ -20,7 +21,9 @@ function SignUpPage() {
       await signup(email, name, password, passwordConfirm);
       navigate("/verify-email");
     } catch (err) {
-      console.log(err.response.data.error);
+      console.log(err?.response?.data?.message);
+      if (err?.response?.data?.message)
+        toast.error(err?.response?.data?.message);
     }
   };
 
@@ -66,7 +69,9 @@ function SignUpPage() {
             onChange={(e) => setPasswordConfirm(e.target.value)}
           />
           {error && (
-            <p className="text-red-500 font-semibold mt-2">{error.message}</p>
+            <p className="text-red-500 font-semibold mt-2">
+              {error?.data?.message}
+            </p>
           )}
           <PasswordStrengthMeter password={password} />
           <motion.button

@@ -4,6 +4,7 @@ import { useAuthStore } from "../store/authStore";
 import Input from "../components/Input";
 import { ArrowLeft, Loader, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
@@ -13,8 +14,13 @@ const ForgotPasswordPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await forgotPassword(email);
-    setIsSubmitted(true);
+    try {
+      await forgotPassword(email);
+      setIsSubmitted(true);
+    } catch (error) {
+      if (error?.response?.data?.message)
+        toast.error(error?.response?.data?.message);
+    }
   };
 
   return (

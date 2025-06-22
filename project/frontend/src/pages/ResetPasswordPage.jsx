@@ -27,7 +27,8 @@ const ResetPasswordPage = () => {
       }, 2000);
     } catch (error) {
       console.error(error);
-      toast.error(error.message || "Error resetting password");
+      if (error?.response?.data?.message)
+        toast.error(error?.response?.data?.message);
     }
   };
 
