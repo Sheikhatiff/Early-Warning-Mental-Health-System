@@ -49,8 +49,7 @@ const Footer = () => {
             />
           </div>
           <p className="text-gray-400 text-sm leading-relaxed">
-            Empowering mental wellness through innovative AI-driven solutions
-            and professional support.
+            Empowering mental wellness through innovative AI-driven solutions.
           </p>
           <a
             href="https://www.psychepulse.site"

@@ -37,7 +37,7 @@ const DashboardMain = ({ user }) => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-gray-400 text-lg"
         >
-          Ready to capture your thoughts and ideas today?
+          What's on your mind today?
         </motion.p>
       </div>
 
@@ -59,10 +59,10 @@ const DashboardMain = ({ user }) => {
                 <PenTool className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">
-                Write New Thought
+                Write New Entry
               </h3>
               <p className="text-white text-opacity-80 text-sm mb-4">
-                Capture your ideas and thoughts instantly
+                Communicate your thoughts and feelings in a safe environment
               </p>
               <div className="flex items-center text-white text-opacity-70 group-hover:text-opacity-100 transition-all">
                 <span className="text-sm mr-2">Get Started</span>
@@ -128,7 +128,7 @@ const DashboardMain = ({ user }) => {
         >
           <div className="bg-gray-800 bg-opacity-40 rounded-xl p-4 border border-green-500/20 text-center">
             <div className="text-2xl font-bold text-green-400 mb-1">12</div>
-            <div className="text-xs text-gray-400">Thoughts Captured</div>
+            <div className="text-xs text-gray-400">Entries Recorded</div>
           </div>
 
           <div className="bg-gray-800 bg-opacity-40 rounded-xl p-4 border border-green-500/20 text-center">

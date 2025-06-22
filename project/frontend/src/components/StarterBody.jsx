@@ -9,6 +9,7 @@ import {
   CheckCircle,
   Star,
   Play,
+  BellIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -18,21 +19,21 @@ const Body = () => {
       icon: Brain,
       title: "AI-Powered Assessment",
       description:
-        "Advanced algorithms analyze your mental health patterns and provide personalized insights for better wellness outcomes.",
+        "Understand your mental health patterns with the help of advanced algorithms for better mental wellness.",
       color: "from-green-400 to-emerald-500",
     },
     {
-      icon: Users,
-      title: "Professional Support",
+      icon: BellIcon,
+      title: "Notification Support",
       description:
-        "Connect with licensed mental health professionals who understand your unique needs and journey.",
+        "Receive timely notifications upon changes in your mental health.",
       color: "from-emerald-400 to-teal-500",
     },
     {
       icon: Clock,
       title: "24/7 Monitoring",
       description:
-        "Continuous wellness tracking with real-time alerts and support when you need it most.",
+        "Continuous tracking with real-time alerts and support whenever you need it.",
       color: "from-teal-400 to-cyan-500",
     },
   ];
@@ -45,11 +46,11 @@ const Body = () => {
   ];
 
   const benefits = [
-    "Personalized mental health assessments",
-    "Evidence-based treatment recommendations",
     "Secure and confidential platform",
-    "Integration with healthcare providers",
+    "Mental health assessments",
     "Progress tracking and analytics",
+    "Timely notifications",
+    "Integration with healthcare providers",
     "Emergency crisis intervention",
   ];
 
@@ -96,10 +97,11 @@ const Body = () => {
                   transition={{ duration: 0.8, delay: 0.5 }}
                   className="text-xl text-gray-300 leading-relaxed max-w-2xl"
                 >
-                  Discover personalized mental health solutions powered by
-                  cutting-edge AI and backed by professional psychology
-                  expertise. Take control of your mental wellness with
-                  evidence-based care.
+                  We provide a secure journaling platform to help you achieve
+                  clarity and life perspective. Become more self-aware regarding
+                  your mental health. Take control of your mental wellness right
+                  now. your words stay yours. We never read them, never share
+                  them. You're in control, always.
                 </motion.p>
               </div>
 
@@ -372,9 +374,9 @@ const Body = () => {
               </span>
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Our platform combines advanced AI technology with human expertise
-              to provide personalized mental health care that adapts to your
-              unique needs.
+              Our platform combines advanced AI technology with personal
+              insights to provide better understanding and awareness tailored to
+              your unique needs.
             </p>
           </motion.div>
 
@@ -435,8 +437,8 @@ const Body = () => {
 
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
               Join thousands of users who have already started their journey to
-              better mental wellness. Get started today with our free
-              assessment.
+              become a better version of themselves. Get started today with our
+              free assessment.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
