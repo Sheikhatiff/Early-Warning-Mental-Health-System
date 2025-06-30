@@ -2,6 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 
 const AUTH_API_URL = `http://localhost:5000/api/v1/auth`;
+const USER_API_URL = `http://localhost:5000/api/v1/users`;
 axios.defaults.withCredentials = true;
 
 export const useAuthStore = create((set) => ({
@@ -131,6 +132,61 @@ export const useAuthStore = create((set) => ({
       set({
         isLoading: false,
         error: error.response.data.message || "Error resetting password",
+      });
+      throw error;
+    }
+  },
+  deleteMe: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      await axios.delete(`${USER_API_URL}/deleteMe`);
+      set({ user: null, isAuthenticated: false, isLoading: false });
+    } catch (error) {
+      set({
+        error: error.response.data.message || "Error deleting account",
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+  updateMyPassword: async (
+    currentPassword,
+    newPassword,
+    confirmNewPassword
+  ) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.patch(`${USER_API_URL}/updateMyPassword`, {
+        currentPassword,
+        password: newPassword,
+        passwordConfirm: confirmNewPassword,
+      });
+      set({ message: response.data.message, isLoading: false });
+    } catch (error) {
+      set({
+        error: error.response.data.message || "Error updating password",
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+  updateMe: async (name, photo) => {
+    set({ isLoading: true, error: null });
+    try {
+      const formData = new FormData();
+      if (name !== "") formData.append("name", name);
+      if (photo) formData.append("photo", photo);
+
+      const response = await axios.patch(`${USER_API_URL}/updateMe`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      set({ user: response.data.data.user, isLoading: false });
+    } catch (error) {
+      set({
+        error: error.response.data.message || "Error updating profile",
+        isLoading: false,
       });
       throw error;
     }

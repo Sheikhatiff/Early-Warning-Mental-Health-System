@@ -28,9 +28,10 @@ const DashboardSideBar = ({ user }) => {
           {/* Profile Image Container */}
           <div className="w-34 h-34 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 p-1">
             <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+              {console.log(user.photo)}
               {user.photo ? (
                 <img
-                  src={`/${user.photo}`}
+                  src={`http://localhost:5000/img/users/${user.photo}`}
                   alt={user.name}
                   className="w-full h-full object-cover"
                 />

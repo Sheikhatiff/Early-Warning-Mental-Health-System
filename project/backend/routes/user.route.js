@@ -8,6 +8,7 @@ import {
   getUserById,
   updatePassword,
   updateUser,
+  uploadUserPhoto,
 } from "../controllers/user.controller.js";
 import { restrictTo, verifyToken } from "../middleware/auth.middleware.js";
 
@@ -17,7 +18,7 @@ UserRouter.use(verifyToken);
 
 UserRouter.delete("/deleteMe", deleteMe);
 UserRouter.patch("/updateMyPassword", updatePassword);
-UserRouter.patch("/updateMe", checkUpdateReq, updateUser);
+UserRouter.patch("/updateMe", checkUpdateReq, uploadUserPhoto, updateUser);
 
 UserRouter.use(restrictTo("admin"));
 

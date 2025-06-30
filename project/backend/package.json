@@ -25,6 +25,7 @@
     "jsonwebtoken": "^9.0.2",
     "mailtrap": "^4.1.0",
     "mongoose": "^8.15.1",
+    "multer": "^2.0.1",
     "path": "^0.12.7",
     "validator": "^13.15.15"
   }

@@ -1,6 +1,33 @@
 import User from "../models/user.model.js";
 import mongoose from "mongoose";
+import multer from "multer";
+import fs from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
 import { generateTokenAndSetCookie } from "../utils/token.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/img/users");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `user-${req.userId}-${Date.now()}.${ext}`);
+  },
+});
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Please upload only image"), false);
+  }
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+export const uploadUserPhoto = upload.single("photo");
 
 export const createUser = async (req, res) => {
   try {
@@ -111,14 +138,39 @@ export const updateUser = async (req, res) => {
     const user = await User.findByIdAndUpdate(_id, updateData, {
       new: true,
       runValidators: true,
-    });
+    }).select("-password -passwordConfirm");
 
     if (!user) {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
     }
+    const oldPhoto = user.photo;
 
+    if (req.file) {
+      user.photo = req.file.filename;
+      await user.save();
+
+      if (oldPhoto && oldPhoto !== "default.png") {
+        const oldPhotoPath = path.join(
+          __dirname,
+          "..",
+          "public",
+          "img",
+          "users",
+          oldPhoto
+        );
+
+        try {
+          await fs.unlink(oldPhotoPath);
+          console.log("Deleted old photo:", oldPhoto);
+        } catch (err) {
+          console.log("Failed to delete old photo:", err.message);
+        }
+      }
+    }
+
+    console.log("upadeted photo :", user.photo);
     res.status(200).json({
       success: true,
       message: "User updated successfully",
@@ -166,6 +218,12 @@ export const updatePassword = async (req, res) => {
         success: false,
         message:
           "Current password, new password, and confirmation are required",
+      });
+    }
+    if (currentPassword === password) {
+      return res.status(400).json({
+        success: false,
+        message: "Current Password and new password cannot be the same",
       });
     }
 
