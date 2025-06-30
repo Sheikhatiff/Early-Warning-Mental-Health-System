@@ -254,7 +254,7 @@ export const checkUpdateReq = async (req, res, next) => {
   try {
     req.userId = req.user._id;
 
-    if (req.body.password || req.body.passwordConfirm)
+    if (req.body?.password || req.body?.passwordConfirm)
       return res.status(400).json({
         success: false,
         message:
